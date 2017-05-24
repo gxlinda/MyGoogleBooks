@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">My Google Books</string>
+    <string name="title_activity_book_list">BookListActivity</string>
+    <string name="enter_keywords">Please enter one or more keywords!</string>
+    <string name="enter_keyword_help">Enter keyword(s) ie. the book title, author, etc., separated by spaces or commas</string>
+    <string name="search">Search</string>
+    <string name="search_question">What are you looking for?</string>
+    <string name="pages_count">Pages:\u0020</string>
+    <string name="no_books">No books found, try another search.</string>
+    <string name="no_internet_connection">No internet connection.</string>
+</resources>

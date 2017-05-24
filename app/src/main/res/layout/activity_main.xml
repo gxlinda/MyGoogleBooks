@@ -1,0 +1,65 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scaleType="fitCenter"
+        android:src="@drawable/android" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="5dp"
+            android:text="@string/search_question"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textColor="@android:color/holo_orange_dark" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal"
+            android:text="@string/enter_keyword_help"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textColor="@android:color/holo_blue_dark"
+            android:textSize="12sp" />
+
+        <EditText
+            android:id="@+id/search_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:backgroundTint="@android:color/holo_orange_dark"
+            android:gravity="center_horizontal"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textColor="@android:color/holo_orange_dark" />
+
+        <Button
+            android:id="@+id/searchButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:backgroundTint="@android:color/holo_blue_dark"
+            android:onClick="searchButtonClicked"
+            android:text="@string/search"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
+
+</LinearLayout>
