@@ -9,9 +9,10 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -25,6 +26,8 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
     public String query;
 
     private String GOOGLE_BOOKS_REQUEST_URL;
+
+    public List<BookInfos> books;
 
     /** Adapter for the list of books */
     private BookInfosAdapter mAdapter;
@@ -44,26 +47,29 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
         query = intent.getStringExtra("KEYWORDS");
         GOOGLE_BOOKS_REQUEST_URL = "https://www.googleapis.com/books/v1/volumes?q=" + query + "&maxResults=30";
 
-        // Find a reference to the {@link ListView} in the layout
-        ListView bookListView = (ListView) findViewById(R.id.list);
-
+        RecyclerView bookListView = (RecyclerView) findViewById(R.id.list);
+        // Initialize books
+        // ???
         // Create a new adapter that takes an empty list of books as input
         mAdapter = new BookInfosAdapter(this, new ArrayList<BookInfos>());
-
-        // Set the adapter on the {@link ListView}
-        // so the list can be populated in the user interface
+        // Attach the adapter to the recyclerview to populate items
         bookListView.setAdapter(mAdapter);
+        // Set layout manager to position the items
+        bookListView.setLayoutManager(new LinearLayoutManager(this));
+
 
         mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
         bookListView.setEmptyView(mEmptyStateTextView);
 
+//not working under RecyclerView?
+
         // Set an item click listener on the ListView, which sends an intent to a web browser
         // to open a website with more information about the selected book.
-        bookListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        bookListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 // Find the current book that was clicked on
-                BookInfos currentbook = mAdapter.getItem(position);
+                BookInfos currentbook = mAdapter.get(position);
 
                 // Convert the String URL into a URI object (to pass into the Intent constructor)
                 Uri bookUri = Uri.parse(currentbook.getInfoLinkUrl());
@@ -118,7 +124,7 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
         mEmptyStateTextView.setText(R.string.no_books);
 
         // Clear the adapter of previous book data
-        mAdapter.clear();
+//        mAdapter.clear();
 
         // If there is a valid list of {@link BookInfo}s, then add them to the adapter's
         // data set. This will trigger the ListView to update.
@@ -134,3 +140,5 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
     }
 
 }
+
+

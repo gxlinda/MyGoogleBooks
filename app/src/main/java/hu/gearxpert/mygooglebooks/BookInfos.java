@@ -10,11 +10,11 @@ public class BookInfos {
     private String mAuthors;
     private  String mPublisher;
     private String mPublishedDate;
-    private int mPageCount;
+    private String mPageCount;
     private String mSmallThumbnailUrl;
     private String mInfoLinkUrl;
 
-    public BookInfos (String title, String authors, String publisher, String publishedDate, int pageCount, String thumbnailUrl, String infoLinkUrl) {
+    public BookInfos(String title, String authors, String publisher, String publishedDate, String pageCount, String thumbnailUrl, String infoLinkUrl) {
         mTitle = title;
         mAuthors = authors;
         mPublisher = publisher;
@@ -40,7 +40,7 @@ public class BookInfos {
         return mPublishedDate;
     }
 
-    public int getPageCount() {
+    public String getPageCount() {
         return mPageCount;
     }
 

@@ -162,24 +162,48 @@ public final class QueryUtils {
             for(int i = 0; i<itemsArray.length(); i++) {
                 JSONObject book = itemsArray.getJSONObject(i);
                 JSONObject volumeInfo = book.getJSONObject("volumeInfo");
-                String title = volumeInfo.getString("title");
 
-                JSONArray authors = volumeInfo.getJSONArray("authors");
-                StringBuilder authorList = new StringBuilder();
-                authorList.append(authors.getString(0));
-                for (int j = 1; j<authors.length(); j++) {
-                         authorList.append(", " + authors.getString(j)); //if there is more than 1 author, we list them all, devided by commas
+                String title = "(no title)";
+                if (volumeInfo.has("title")) {
+                    title = volumeInfo.getString("title");
                 }
 
-                String publisher = volumeInfo.getString("publisher");
-                String publishedDate = volumeInfo.getString("publishedDate");
-                int pageCount = volumeInfo.getInt("pageCount");
+                StringBuilder authorList = new StringBuilder();
+                if (volumeInfo.has("authors")) {
+                    JSONArray authors = volumeInfo.getJSONArray("authors");
+                    authorList.append(authors.getString(0));
+                    for (int j = 1; j < authors.length(); j++) {
+                        authorList.append(", " + authors.getString(j)); //if there is more than 1 author, we list them all, devided by commas
+                    }
+                } else {
+                    authorList.append("(unknown author)");
+                }
+
+                String publisher = "(unknown publisher)";
+                if (volumeInfo.has("publisher")) {
+                    publisher = volumeInfo.getString("publisher");
+                }
+
+                String publishedDate = "(no date available)";
+                if (volumeInfo.has("publishedDate")) {
+                    publishedDate = volumeInfo.getString("publishedDate");
+                }
+
+                String pageCount = "unknown";
+                if (volumeInfo.has("pageCount")) {
+                    pageCount = volumeInfo.getString("pageCount");
+                }
+
                 String infoLinkUrl = volumeInfo.getString("infoLink");
                 JSONObject imageLinks = volumeInfo.getJSONObject("imageLinks");
-                String smallThumbnailUrl = imageLinks.getString("smallThumbnail");
 
-                BookInfos actualbook = new BookInfos(title, authorList.toString(), publisher, publishedDate, pageCount, smallThumbnailUrl, infoLinkUrl);
-                books.add(actualbook);
+                String smallThumbnailUrl = "";
+                if (imageLinks.has("smallThumbnail")) {
+                    smallThumbnailUrl = imageLinks.getString("smallThumbnail");
+                }
+
+                BookInfos actualBook = new BookInfos(title, authorList.toString(), publisher, publishedDate, pageCount, smallThumbnailUrl, infoLinkUrl);
+                books.add(actualBook);
             }
 
         } catch (JSONException e) {

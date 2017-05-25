@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         EditText searchField = (EditText) findViewById(R.id.search_field);
         String searchValue = searchField.getText().toString();
 
-        if (searchValue.length() == 0) {
+        if (searchValue.isEmpty()) {
             Toast.makeText(this, R.string.enter_keywords,Toast.LENGTH_SHORT).show();
         } else {
             searchValue = searchValue.replaceAll("[^\\p{L}\\p{Nd}]+", "+"); //changes all non-letters and non-numbers to +
