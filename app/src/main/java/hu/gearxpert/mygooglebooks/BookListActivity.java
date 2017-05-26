@@ -25,6 +25,7 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
     public String query;
     private String GOOGLE_BOOKS_REQUEST_URL;
     private List<BookInfos> books = new ArrayList<>();
+    List<BookInfos> savedBookList = new ArrayList<>();
     private RecyclerView bookListView;
     /** Adapter for the list of books */
     private BookInfosAdapter mAdapter;
@@ -60,13 +61,13 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
 
         mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
 
-        final BookInfosAdapter adapter = new BookInfosAdapter(this, new ArrayList<BookInfos>());
-        adapter.setOnItemClickListener(new BookInfosAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                // Find the current book that was clicked on
-                BookInfos currentbook = books.get(position);
 
+        ItemClickSupport.addTo(bookListView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+            @Override
+            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                // Find the current book that was clicked on
+
+                BookInfos currentbook = savedBookList.get(position);
                 // Convert the String URL into a URI object (to pass into the Intent constructor)
                 Uri bookUri = Uri.parse(currentbook.getInfoLinkUrl());
 
@@ -125,6 +126,7 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
         if (books != null && !books.isEmpty()) {
             mAdapter.setBookInfoList(books);
             mAdapter.notifyDataSetChanged();
+            savedBookList = new ArrayList<>(books);
 
         } else {
             // Set empty state text to display "No books found."

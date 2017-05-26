@@ -119,7 +119,8 @@ public class BookInfosAdapter extends RecyclerView.Adapter<BookInfosAdapter.View
     }
 
     // Helper method to set the actual book list into the recyclerview on the activity
-    public void setBookInfoList(List<BookInfos> books) {
-        mBookInfos = books;
+    public void setBookInfoList(List<BookInfos> bookList) {
+        mBookInfos = bookList;
     }
+
 }
