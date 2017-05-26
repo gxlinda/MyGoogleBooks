@@ -2,11 +2,9 @@ package hu.gearxpert.mygooglebooks;
 
 import android.text.TextUtils;
 import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -173,7 +171,8 @@ public final class QueryUtils {
                     JSONArray authors = volumeInfo.getJSONArray("authors");
                     authorList.append(authors.getString(0));
                     for (int j = 1; j < authors.length(); j++) {
-                        authorList.append(", " + authors.getString(j)); //if there is more than 1 author, we list them all, devided by commas
+                        authorList.append(", " + authors.getString(j)); //if there is more than 1 author,
+                        // we list them all, devided by commas
                     }
                 } else {
                     authorList.append("(unknown author)");
@@ -195,8 +194,8 @@ public final class QueryUtils {
                 }
 
                 String infoLinkUrl = volumeInfo.getString("infoLink");
-                JSONObject imageLinks = volumeInfo.getJSONObject("imageLinks");
 
+                JSONObject imageLinks = volumeInfo.getJSONObject("imageLinks");
                 String smallThumbnailUrl = "";
                 if (imageLinks.has("smallThumbnail")) {
                     smallThumbnailUrl = imageLinks.getString("smallThumbnail");

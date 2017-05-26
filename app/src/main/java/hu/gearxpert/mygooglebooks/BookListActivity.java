@@ -9,10 +9,10 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -21,20 +21,15 @@ import java.util.List;
 public class BookListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<BookInfos>> {
 
     public static final String LOG_TAG = BookListActivity.class.getName();
-
     /** search query entered by the user */
     public String query;
-
     private String GOOGLE_BOOKS_REQUEST_URL;
-
-    public List<BookInfos> books;
-
+    private List<BookInfos> books = new ArrayList<>();
+    private RecyclerView bookListView;
     /** Adapter for the list of books */
     private BookInfosAdapter mAdapter;
-
     /** TextView that is displayed when the list is empty */
     private TextView mEmptyStateTextView;
-
     /**Constant value for the book loader ID. */
     private static final int BOOK_LOADER_ID = 1;
 
@@ -43,33 +38,34 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_list);
 
+        //get the entered search keyword from MainActivity
         Intent intent = getIntent();
         query = intent.getStringExtra("KEYWORDS");
         GOOGLE_BOOKS_REQUEST_URL = "https://www.googleapis.com/books/v1/volumes?q=" + query + "&maxResults=30";
 
-        RecyclerView bookListView = (RecyclerView) findViewById(R.id.list);
-        // Initialize books
-        // ???
+        //find the recyclerview with ID list
+        bookListView = (RecyclerView) findViewById(R.id.list);
+
         // Create a new adapter that takes an empty list of books as input
-        mAdapter = new BookInfosAdapter(this, new ArrayList<BookInfos>());
-        // Attach the adapter to the recyclerview to populate items
-        bookListView.setAdapter(mAdapter);
+        mAdapter = new BookInfosAdapter(this, books);
+
         // Set layout manager to position the items
         bookListView.setLayoutManager(new LinearLayoutManager(this));
 
+        //add dividers between list items in the recyclerview
+        bookListView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+
+        // Attach the adapter to the recyclerview to populate items
+        bookListView.setAdapter(mAdapter);
 
         mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
-        bookListView.setEmptyView(mEmptyStateTextView);
 
-//not working under RecyclerView?
-
-        // Set an item click listener on the ListView, which sends an intent to a web browser
-        // to open a website with more information about the selected book.
-        bookListView.setOnItemClickListener(new OnItemClickListener() {
+        final BookInfosAdapter adapter = new BookInfosAdapter(this, new ArrayList<BookInfos>());
+        adapter.setOnItemClickListener(new BookInfosAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+            public void onItemClick(View view, int position) {
                 // Find the current book that was clicked on
-                BookInfos currentbook = mAdapter.get(position);
+                BookInfos currentbook = books.get(position);
 
                 // Convert the String URL into a URI object (to pass into the Intent constructor)
                 Uri bookUri = Uri.parse(currentbook.getInfoLinkUrl());
@@ -117,28 +113,30 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
     @Override
     public void onLoadFinished(Loader<List<BookInfos>> loader, List<BookInfos> books) {
 
+        //hides the progress bar circle
         View circle = findViewById(R.id.progress_bar);
         circle.setVisibility(View.GONE);
 
-        // Set empty state text to display "No books found."
-        mEmptyStateTextView.setText(R.string.no_books);
-
         // Clear the adapter of previous book data
-//        mAdapter.clear();
+        mAdapter.setBookInfoList(null);
 
         // If there is a valid list of {@link BookInfo}s, then add them to the adapter's
-        // data set. This will trigger the ListView to update.
+        // data set.
         if (books != null && !books.isEmpty()) {
-            mAdapter.addAll(books);
+            mAdapter.setBookInfoList(books);
+            mAdapter.notifyDataSetChanged();
+
+        } else {
+            // Set empty state text to display "No books found."
+            mEmptyStateTextView.setText(R.string.no_books);
         }
     }
 
     @Override
     public void onLoaderReset(Loader<List<BookInfos>> loader) {
         // Loader reset, so we can clear out our existing data.
-        mAdapter.clear();
+        mAdapter.setBookInfoList(null);
     }
-
 }
 
 

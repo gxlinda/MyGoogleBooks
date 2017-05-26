@@ -7,9 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.squareup.picasso.Picasso;
-
 import java.util.List;
 
 /**
@@ -19,14 +17,29 @@ import java.util.List;
 
 public class BookInfosAdapter extends RecyclerView.Adapter<BookInfosAdapter.ViewHolder> {
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    /***** Creating OnItemClickListener *****/
+    // Define listener member variable
+    private OnItemClickListener listener;
+
+    // Define the listener interface
+    public interface OnItemClickListener {
+        void onItemClick(View itemView, int position);
+    }
+
+    // Define the method that allows the parent activity to define the listener
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
+
+    // Define viewholder
+    public class ViewHolder extends RecyclerView.ViewHolder {
         TextView authorTextView;
         TextView titleTextView;
         TextView publishedTextView;
         TextView pagesCountTextView;
         ImageView smallThumbnail;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(final View itemView) {
             super(itemView);
 
             authorTextView = (TextView) itemView.findViewById(R.id.author);
@@ -34,6 +47,20 @@ public class BookInfosAdapter extends RecyclerView.Adapter<BookInfosAdapter.View
             publishedTextView = (TextView) itemView.findViewById(R.id.published);
             pagesCountTextView = (TextView) itemView.findViewById(R.id.pagesCount);
             smallThumbnail = (ImageView) itemView.findViewById(R.id.smallThumbnail);
+
+            // Setup the click listener
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Triggers click upwards to the adapter on click
+                    if (listener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            listener.onItemClick(itemView, position);
+                        }
+                    }
+                }
+            });
         }
     }
 
@@ -49,10 +76,6 @@ public class BookInfosAdapter extends RecyclerView.Adapter<BookInfosAdapter.View
     public BookInfosAdapter(Context context, List<BookInfos> books) {
         mBookInfos = books;
         mContext = context;
-    }
-
-    private Context getContext() {
-        return mContext;
     }
 
     // Inflating a layout from XML and returning the holder
@@ -76,23 +99,27 @@ public class BookInfosAdapter extends RecyclerView.Adapter<BookInfosAdapter.View
         BookInfos currentBook = mBookInfos.get(position);
 
         // Find the ImageView in the layout with the ID smallThumbnail, and set the image with Picasso image loader library
-
         String url = currentBook.getThumbnailUrl();
         Picasso.with(mContext)
                 .load(url)
                 .placeholder(R.drawable.book_placeholder) //image to display while the url image is downloading
-                .error(R.drawable.error_downloading)     //if some error has occurred in downloading the image, this image would be displayed
+                .error(R.drawable.error_downloading)      //if some error has occurred in downloading the image, this image would be displayed
                 .into(viewHolder.smallThumbnail);
 
         viewHolder.authorTextView.setText(currentBook.getAuthors());
         viewHolder.titleTextView.setText(currentBook.getTitle());
         viewHolder.publishedTextView.setText(currentBook.getPublisher() + ", " + currentBook.getPublishedDate());
-        viewHolder.pagesCountTextView.setText("Pages: " + currentBook.getPageCount());
+        viewHolder.pagesCountTextView.setText(mContext.getResources().getString(R.string.pages_count) + currentBook.getPageCount());
     }
 
     // Returns the total count of items in the list
     @Override
     public int getItemCount() {
         return mBookInfos.size();
+    }
+
+    // Helper method to set the actual book list into the recyclerview on the activity
+    public void setBookInfoList(List<BookInfos> books) {
+        mBookInfos = books;
     }
 }
